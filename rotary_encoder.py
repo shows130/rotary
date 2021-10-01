@@ -1,8 +1,8 @@
 import RPi.GPIO as GPIO
 
-
+#클래스 Encoder를 정의 하는 코드
 class Encoder:
-
+    #클래스 초기상태 설정
     def __init__(self, leftPin, rightPin, callback=None):
         self.leftPin = leftPin
         self.rightPin = rightPin
@@ -10,18 +10,19 @@ class Encoder:
         self.state = '00'
         self.direction = None
         self.callback = callback
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.leftPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.setup(self.rightPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        #칩셋 설정
+        GPIO.setmode(GPIO.BCM)          #라즈베리파이 모드 설정
+        GPIO.setup(self.leftPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)       #leftPin을 수신모드,  수신되지 않았을 때 off, 수신됐을 때 on
+        GPIO.setup(self.rightPin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)      #rightPin을 수신모드,  수신되지 않았을 때 off, 수신됐을 때 on
         GPIO.add_event_detect(self.leftPin, GPIO.BOTH,
-                              callback=self.transitionOccurred)
+                              callback=self.transitionOccurred)             #leftPin에 특정 엣지(0->1 or 1->0)가 일어났을 때 transitionOccurred라는 함수 실행
         GPIO.add_event_detect(self.rightPin, GPIO.BOTH,
-                              callback=self.transitionOccurred)
+                              callback=self.transitionOccurred)             #rightPin에 특정 엣지(0->1 or 1->0)가 일어났을 때 transitionOccurred라는 함수 실행
 
     def transitionOccurred(self, channel):
-        p1 = GPIO.input(self.leftPin)
-        p2 = GPIO.input(self.rightPin)
-        newState = "{}{}".format(p1, p2)
+        p1 = GPIO.input(self.leftPin)           #leftpin에 input된 값을 p1에 저장
+        p2 = GPIO.input(self.rightPin)          #rightpin에 input된 값을 p2에 저장
+        newState = "{}{}".format(p1, p2)        #p1과 p2를 붙인 문자열 생성
 
         if self.state == "00":  # Resting position
             if newState == "01":  # Turned right 1
