@@ -63,7 +63,8 @@ class Encoder:
                     if self.callback is not None:
                         self.callback(self.value)
 
-        self.state = newState
+        self.state = newState                   #현재 state를 state 항목에 저장
 
+    #value값을 반환하는 함수생성
     def getValue(self):
         return self.value
